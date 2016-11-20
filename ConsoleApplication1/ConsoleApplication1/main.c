@@ -45,13 +45,41 @@ int getStringFromFile(char* fileName, char** out)
 	return 1;
 }
 
-char** separateString(char** buffer)
+double* separateKeyValue(char** arrayOfKeyValue)
 {
-	double** arrayNum = NULL;
+	int count; 
+	sscanf_s(arrayOfKeyValue[0], "%i", &count);
+	
+	double* arrayDecimal = malloc(count * sizeof(double));
+	char sepComma = ",";
+	char* token2 = NULL;
+	char* next_token2;
+
+	for (size_t j = 1; j <= count; j++)
+	{
+		token2 = strtok_s(arrayOfKeyValue[j], sepComma, &next_token2);
+		unsigned int index;
+		sscanf_s(token2, "%d", &index);
+
+		double value;
+		sscanf_s(next_token2, "%d", &value);
+
+		arrayDecimal[index] = value;
+
+		printf("res[%d] = %d\n", index, arrayDecimal[index]);
+		printf("\n");
+	}
+
+	return arrayDecimal;
+}
+
+char** separateStringBySemicolon(char** buffer)
+{
+	char** arrayNum = NULL;
 	char sep[] = ";";
 	char* token1 = NULL;
 	char* next_token1;
-	int arraySize = 0, i;
+	int arraySize = 1;
 
 	token1 = strtok_s(*buffer, sep, &next_token1);
 
@@ -59,14 +87,14 @@ char** separateString(char** buffer)
 	{
 		if (arrayNum == NULL)
 		{
-			arrayNum = malloc(sizeof(double*));
+			arrayNum = malloc(sizeof(char*));
 			if (arrayNum == NULL)
 			{
 				exit(-1); //memory allocation failed
 			}
 		}
 		
-		arrayNum = realloc(arrayNum, sizeof(double*) * ++arraySize);
+		arrayNum = realloc(arrayNum, sizeof(char*) * ++arraySize);
 
 		arrayNum[arraySize - 1] = token1; //we add the token into the array
 		printf(token1);
@@ -74,16 +102,18 @@ char** separateString(char** buffer)
 
 		token1 = strtok_s(NULL, sep, &next_token1); //we get the next token
 	}
+
+	//char* charDest = NULL;
+	////(char) (arraySize - 1) + '0';
+	//char numb = (char*) (arraySize - 1) + '0';
+	//snprintf(charDest, 10, "%o", numb);
+	//printf("%s", *charDest);
+	//arrayNum[0] = (char*) ((arraySize - 1)+'0');
 	
-	//realloc one extra element for the array's last NULL
-	//arrayNum = realloc(arrayNum, sizeof(double*) * (arraySize + 1));
-	//arrayNum[arraySize] = "\0";
-	
-	// print the result
-	for (i = 0; i < arraySize; ++i)
+	for (int i = 0; i < (arraySize); ++i)
 		printf("res[%d] = %s\n", i, arrayNum[i]);
 	printf("\n");
-
+	
 	return arrayNum;
 }
 
@@ -94,7 +124,9 @@ int main()
 	char* fileName = "input.txt";
 	char* buffer = NULL;
 	getStringFromFile(fileName, &buffer);
-	char** arrayNum = separateString(&buffer);
+	char** arrayKeyValue = separateStringBySemicolon(&buffer);
+	double* arrayValue = separateKeyValue(&arrayKeyValue);
+
 	
 
 	//************ Sort array in ascending order based on index of index:value pairs ************
@@ -116,12 +148,10 @@ int main()
 		printf("res[%d] = %c\n", i, arrayNum2[i]);
 	printf("\n");*/
 	
-
-	//We deallocate buffer's memory
-	free(buffer);
-
 	// free the memory allocated
-	free(arrayNum);
+	free(buffer);
+	free(arrayKeyValue);
+	free(arrayValue);
 	
 }
 
