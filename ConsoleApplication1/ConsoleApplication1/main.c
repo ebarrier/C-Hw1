@@ -150,9 +150,14 @@ int main()
 	for (int i = 1; i < Element1.length; i++)
 	{
 		double first =  (double) arrayValue[i];
+		printf("First: %d", first);
+		printf("\n");
 		double second = (double) arrayValue[i-1];
+		printf("Second: %d", second);
+		printf("\n");
 		double result = (double) (first - second);
-		printf_s("%d", result);
+		printf_s("Result: %d", result);
+		printf("\n");
 		if (i != (Element1.length - 1))
 		{
 			printf_s(",");
