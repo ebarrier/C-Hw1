@@ -164,26 +164,6 @@ int main()
 		}
 	}
 
-
-
-	//************ Sort array in ascending order based on index of index:value pairs ************
-	/*char* arrayNum2 = malloc(sizeof(char) * arraySize);
-	if (arrayNum2 == NULL)
-	{
-	exit(-1); //memory allocation failed
-	}
-	for (int i = 0; i < (arraySize +1); i++)
-	{
-	if ((arrayNum[i][0] - 0) == i)
-	{
-	arrayNum2[i] = arrayNum[i][3];
-	}
-	}
-
-	for (i = 0; i < (arraySize +1); ++i)
-	printf("res[%d] = %c\n", i, arrayNum2[i]);
-	printf("\n");*/
-
 	// free the memory allocated
 	free(buffer);
 	//free(arrayKeyValue);
