@@ -123,20 +123,41 @@ char** separateStringBySemicolon(char** buffer, int* numberElements)
 
 int main()
 {
-	//************ Copy file's content into a buffer ************
-
 	char* fileName = "input.txt";
 	char* buffer = NULL;
 	int numberOfElementsInArray;
 	struct inputElement Element1;
 
 	getStringFromFile(fileName, &buffer);
-	char** arrayKeyValue = separateStringBySemicolon(&buffer, &numberOfElementsInArray);
+	Element1.data = separateStringBySemicolon(&buffer, &Element1.length);
 
-	Element1.data = arrayKeyValue;
-	Element1.length = numberOfElementsInArray;
+	//Element1.data = arrayKeyValue;
+	//Element1.length = numberOfElementsInArray;
 
 	double* arrayValue = separateKeyValue(&Element1);
+
+	printf("res[0] = %o\n", &arrayValue[0]);
+	printf("res[1] = %o\n", &arrayValue[1]);
+	printf("res[2] = %o\n", &arrayValue[2]);
+	printf("res[3] = %o\n", &arrayValue[3]);
+	printf("\n");
+	printf("\n");
+
+	double test = (double) arrayValue[0];
+	printf("%d", test);
+	printf("\n");
+
+	for (int i = 1; i < Element1.length; i++)
+	{
+		double first =  (double) arrayValue[i];
+		double second = (double) arrayValue[i-1];
+		double result = (double) (first - second);
+		printf_s("%d", result);
+		if (i != (Element1.length - 1))
+		{
+			printf_s(",");
+		}
+	}
 
 
 
@@ -160,7 +181,7 @@ int main()
 
 	// free the memory allocated
 	free(buffer);
-	free(arrayKeyValue);
+	//free(arrayKeyValue);
 	free(arrayValue);
 
 }
