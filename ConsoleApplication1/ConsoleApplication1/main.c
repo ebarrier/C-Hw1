@@ -3,6 +3,11 @@
 #include <string.h>
 #include <search.h>
 
+struct inputElement {
+	int length;
+	char** data;
+};
+
 int getStringFromFile(char* fileName, char** out)
 {
 	FILE* file;
@@ -34,7 +39,7 @@ int getStringFromFile(char* fileName, char** out)
 
 	//We put the content of 'file' inside the buffer
 	fgets(*out, numChar + 1, file);
-	
+
 	//We output the buffer to console
 	//printf("%s", *out);
 	//printf("\n");
@@ -45,17 +50,21 @@ int getStringFromFile(char* fileName, char** out)
 	return 1;
 }
 
-double* separateKeyValue(char** arrayOfKeyValue)
+double* separateKeyValue(struct inputElement* inputElement)
 {
-	int count; 
-	sscanf_s(arrayOfKeyValue[0], "%i", &count);
-	
+	int count = inputElement->length;
+	char** arrayOfKeyValue = inputElement->data;
+
 	double* arrayDecimal = malloc(count * sizeof(double));
-	char sepComma = ",";
+	if (arrayDecimal == NULL)
+	{
+		exit(-1);
+	}
+	char sepComma[] = ",";
 	char* token2 = NULL;
 	char* next_token2;
 
-	for (size_t j = 1; j <= count; j++)
+	for (int j = 0; j < count; j++)
 	{
 		token2 = strtok_s(arrayOfKeyValue[j], sepComma, &next_token2);
 		unsigned int index;
@@ -66,20 +75,20 @@ double* separateKeyValue(char** arrayOfKeyValue)
 
 		arrayDecimal[index] = value;
 
-		printf("res[%d] = %d\n", index, arrayDecimal[index]);
+		printf("res[%o] = %o\n", index, arrayDecimal[index]);
 		printf("\n");
 	}
 
 	return arrayDecimal;
 }
 
-char** separateStringBySemicolon(char** buffer)
+char** separateStringBySemicolon(char** buffer, int* numberElements)
 {
-	char** arrayNum = NULL;
+	char** arrayNum = NULL; //add const
 	char sep[] = ";";
-	char* token1 = NULL;
+	char* token1;
 	char* next_token1;
-	int arraySize = 1;
+	int arraySize = 0;
 
 	token1 = strtok_s(*buffer, sep, &next_token1);
 
@@ -93,7 +102,7 @@ char** separateStringBySemicolon(char** buffer)
 				exit(-1); //memory allocation failed
 			}
 		}
-		
+
 		arrayNum = realloc(arrayNum, sizeof(char*) * ++arraySize);
 
 		arrayNum[arraySize - 1] = token1; //we add the token into the array
@@ -103,55 +112,55 @@ char** separateStringBySemicolon(char** buffer)
 		token1 = strtok_s(NULL, sep, &next_token1); //we get the next token
 	}
 
-	//char* charDest = NULL;
-	////(char) (arraySize - 1) + '0';
-	//char numb = (char*) (arraySize - 1) + '0';
-	//snprintf(charDest, 10, "%o", numb);
-	//printf("%s", *charDest);
-	//arrayNum[0] = (char*) ((arraySize - 1)+'0');
-	
+	*numberElements = arraySize;
+
 	for (int i = 0; i < (arraySize); ++i)
 		printf("res[%d] = %s\n", i, arrayNum[i]);
 	printf("\n");
-	
+
 	return arrayNum;
 }
 
 int main()
-{	
+{
 	//************ Copy file's content into a buffer ************
-	
+
 	char* fileName = "input.txt";
 	char* buffer = NULL;
-	getStringFromFile(fileName, &buffer);
-	char** arrayKeyValue = separateStringBySemicolon(&buffer);
-	double* arrayValue = separateKeyValue(&arrayKeyValue);
+	int numberOfElementsInArray;
+	struct inputElement Element1;
 
-	
+	getStringFromFile(fileName, &buffer);
+	char** arrayKeyValue = separateStringBySemicolon(&buffer, &numberOfElementsInArray);
+
+	Element1.data = arrayKeyValue;
+	Element1.length = numberOfElementsInArray;
+
+	double* arrayValue = separateKeyValue(&Element1);
+
+
 
 	//************ Sort array in ascending order based on index of index:value pairs ************
 	/*char* arrayNum2 = malloc(sizeof(char) * arraySize);
 	if (arrayNum2 == NULL)
 	{
-		exit(-1); //memory allocation failed
+	exit(-1); //memory allocation failed
 	}
-
 	for (int i = 0; i < (arraySize +1); i++)
 	{
-		if ((arrayNum[i][0] - 0) == i)
-		{
-			arrayNum2[i] = arrayNum[i][3];
-		}
+	if ((arrayNum[i][0] - 0) == i)
+	{
+	arrayNum2[i] = arrayNum[i][3];
 	}
-	
+	}
+
 	for (i = 0; i < (arraySize +1); ++i)
-		printf("res[%d] = %c\n", i, arrayNum2[i]);
+	printf("res[%d] = %c\n", i, arrayNum2[i]);
 	printf("\n");*/
-	
+
 	// free the memory allocated
 	free(buffer);
 	free(arrayKeyValue);
 	free(arrayValue);
-	
-}
 
+}
