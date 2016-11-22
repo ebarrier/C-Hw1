@@ -89,7 +89,7 @@ int* separateIndexValue(struct inputElement* inputElement) //we want to return a
 char** separateStringBySemicolon(char** buffer, int* numberElements) //Return an array of pointers to char
 {
 	//Separate the buffer string by the semi-colon to put pairs of "index,value" in array
-	const char** arrayNum = NULL; //add const
+	const char** arrayNum = NULL; //advised on SOF
 	char sep[] = ";";
 	char* token1;
 	char* next_token1;
