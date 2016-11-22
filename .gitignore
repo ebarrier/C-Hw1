@@ -8,3 +8,7 @@ Test.c
 *.opendb
 *.vcxproj
 *.db
+*.sln
+*.user
+*.filters
+.vs
