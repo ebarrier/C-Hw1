@@ -148,7 +148,7 @@ int main()
 
 	// free the memory allocated
 	free(buffer);
-	//free(arrayKeyValue);
+	free(Element1.data);
 	free(arrayValue);
 
 }
