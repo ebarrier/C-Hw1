@@ -50,12 +50,12 @@ int getStringFromFile(char* fileName, char** out)
 	return 1;
 }
 
-double* separateKeyValue(struct inputElement* inputElement)
+int* separateKeyValue(struct inputElement* inputElement)
 {
 	int count = inputElement->length;
 	char** arrayOfKeyValue = inputElement->data;
 
-	double* arrayDecimal = malloc(count * sizeof(double));
+	int* arrayDecimal = malloc(count * sizeof(int));
 	if (arrayDecimal == NULL)
 	{
 		exit(-1);
@@ -68,14 +68,14 @@ double* separateKeyValue(struct inputElement* inputElement)
 	{
 		token2 = strtok_s(arrayOfKeyValue[j], sepComma, &next_token2);
 		unsigned int index;
-		sscanf_s(token2, "%d", &index);
+		sscanf_s(token2, "%i", &index);
 
-		double value;
-		sscanf_s(next_token2, "%d", &value);
+		int value;
+		sscanf_s(next_token2, "%i", &value);
 
 		arrayDecimal[index] = value;
 
-		printf("res[%o] = %o\n", index, arrayDecimal[index]);
+		printf("res[%i] = %i\n", index, arrayDecimal[index]);
 		printf("\n");
 	}
 
@@ -134,30 +134,12 @@ int main()
 	//Element1.data = arrayKeyValue;
 	//Element1.length = numberOfElementsInArray;
 
-	double* arrayValue = separateKeyValue(&Element1);
+	int* arrayValue = separateKeyValue(&Element1);
 
-	printf("res[0] = %o\n", &arrayValue[0]);
-	printf("res[1] = %o\n", &arrayValue[1]);
-	printf("res[2] = %o\n", &arrayValue[2]);
-	printf("res[3] = %o\n", &arrayValue[3]);
-	printf("\n");
-	printf("\n");
-
-	double test = (double) arrayValue[0];
-	printf("%d", test);
-	printf("\n");
 
 	for (int i = 1; i < Element1.length; i++)
 	{
-		double first =  (double) arrayValue[i];
-		printf("First: %d", first);
-		printf("\n");
-		double second = (double) arrayValue[i-1];
-		printf("Second: %d", second);
-		printf("\n");
-		double result = (double) (first - second);
-		printf_s("Result: %d", result);
-		printf("\n");
+		printf_s("%i", arrayValue[i] - arrayValue[i - 1]);
 		if (i != (Element1.length - 1))
 		{
 			printf_s(",");
