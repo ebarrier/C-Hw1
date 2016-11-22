@@ -3,7 +3,8 @@
 #include <string.h>
 #include <search.h>
 
-struct inputElement {
+struct inputElement { 
+	//Struct what we use to store char* in array and int to store its length (nbr of array elements)
 	int length;
 	char** data;
 };
@@ -18,45 +19,48 @@ int getStringFromFile(char* fileName, char** out)
 		return -1;
 	}
 
-	//We run from the beginning of the file until the end
+	//Run from the beginning of the file until the end
 	fseek(file, 0, SEEK_END);
 
-	//We get the position we have reached (how many characters)
+	//Get the position we have reached (how many characters)
 	long numChar = ftell(file);
 
 	//Allocate memory array for file content AND the null terminator
-	//The allocation must be done in bytes. That's why we multiply the sizeof a char (in bytes) by the num of char we need.
+	//Allocation must be done in bytes. That's why we multiply the sizeof a char (in bytes) by the num of char we need.
 	*out = malloc((numChar + 1) * sizeof(char));
 
-	//we check if malloc failed (null or 0) or not
+	//Check if malloc failed (null or 0) or not
 	if (*out == NULL)
 	{
 		return -1;
 	}
 
-	//We go back to the beginning of the file
+	//Go back to the beginning of the file
 	rewind(file);
 
-	//We put the content of 'file' inside the buffer
+	//Put the content of 'file' inside the buffer
 	fgets(*out, numChar + 1, file);
 
-	//We output the buffer to console
+	//Output the buffer to console
 	//printf("%s", *out);
 	//printf("\n");
 
-	//We close the file
+	//Close the file
 	fclose(file);
 
 	return 1;
 }
 
-int* separateKeyValue(struct inputElement* inputElement)
+int* separateIndexValue(struct inputElement* inputElement) //we want to return an array of int
 {
-	int count = inputElement->length;
-	char** arrayOfKeyValue = inputElement->data;
+	//Separate the index,value pairs by the comma between them
+	//and store the value in an array of int by its paired index.
 
-	int* arrayDecimal = malloc(count * sizeof(int));
-	if (arrayDecimal == NULL)
+	int count = inputElement->length; //Nbr of elements in the parameter array
+	char** arrayOfKeyValue = inputElement->data; //Parameter's array to deal with
+
+	int* arrayDecimal = malloc(count * sizeof(int)); //Allocate memory to store our returning var (array of int) 
+	if (arrayDecimal == NULL) //Check if allocation succeeded
 	{
 		exit(-1);
 	}
@@ -66,29 +70,30 @@ int* separateKeyValue(struct inputElement* inputElement)
 
 	for (int j = 0; j < count; j++)
 	{
-		token2 = strtok_s(arrayOfKeyValue[j], sepComma, &next_token2);
+		token2 = strtok_s(arrayOfKeyValue[j], sepComma, &next_token2); //Separate the string by the comma.
 		unsigned int index;
-		sscanf_s(token2, "%i", &index);
+		sscanf_s(token2, "%i", &index); //Store index of index,value pair to unsigned int var
 
 		int value;
-		sscanf_s(next_token2, "%i", &value);
+		sscanf_s(next_token2, "%i", &value); //Store value of index,value pair to int var
 
-		arrayDecimal[index] = value;
+		arrayDecimal[index] = value; //Assign index and value to the result array
 
-		printf("res[%i] = %i\n", index, arrayDecimal[index]);
-		printf("\n");
+		//printf("res[%i] = %i\n", index, arrayDecimal[index]);
+		//printf("\n");
 	}
 
 	return arrayDecimal;
 }
 
-char** separateStringBySemicolon(char** buffer, int* numberElements)
+char** separateStringBySemicolon(char** buffer, int* numberElements) //Return an array of pointers to char
 {
-	char** arrayNum = NULL; //add const
+	//Separate the buffer string by the semi-colon to put pairs of "index,value" in array
+	const char** arrayNum = NULL; //add const
 	char sep[] = ";";
 	char* token1;
 	char* next_token1;
-	int arraySize = 0;
+	int arraySize = 0; //Store the number of elements in the returned array
 
 	token1 = strtok_s(*buffer, sep, &next_token1);
 
@@ -103,20 +108,22 @@ char** separateStringBySemicolon(char** buffer, int* numberElements)
 			}
 		}
 
-		arrayNum = realloc(arrayNum, sizeof(char*) * ++arraySize);
+		arrayNum = realloc(arrayNum, sizeof(char*) * ++arraySize); //Allocate memory for array of pointers to char
 
-		arrayNum[arraySize - 1] = token1; //we add the token into the array
-		printf(token1);
-		printf("\n");
+		arrayNum[arraySize - 1] = token1; //Add the token (pointer) into the array
+		//printf(token1);
+		//printf("\n");
 
-		token1 = strtok_s(NULL, sep, &next_token1); //we get the next token
+		token1 = strtok_s(NULL, sep, &next_token1); //Get the next token
 	}
 
-	*numberElements = arraySize;
+	*numberElements = arraySize; //Store the array length to a parameter
 
-	for (int i = 0; i < (arraySize); ++i)
-		printf("res[%d] = %s\n", i, arrayNum[i]);
-	printf("\n");
+	//for (int i = 0; i < (arraySize); ++i)
+	//{
+	//	printf("res[%d] = %s\n", i, arrayNum[i]);
+	//}
+	//printf("\n");
 
 	return arrayNum;
 }
@@ -125,17 +132,16 @@ int main()
 {
 	char* fileName = "input.txt";
 	char* buffer = NULL;
-	int numberOfElementsInArray;
 	struct inputElement Element1;
 
 	getStringFromFile(fileName, &buffer);
 	Element1.data = separateStringBySemicolon(&buffer, &Element1.length);
+	int* arrayValue = separateIndexValue(&Element1);
 
-	//Element1.data = arrayKeyValue;
-	//Element1.length = numberOfElementsInArray;
-
-	int* arrayValue = separateKeyValue(&Element1);
-
+	if (Element1.length == 1)
+	{
+		printf_s("0");
+	}
 
 	for (int i = 1; i < Element1.length; i++)
 	{
@@ -145,6 +151,7 @@ int main()
 			printf_s(",");
 		}
 	}
+	printf("\n");
 
 	// free the memory allocated
 	free(buffer);
